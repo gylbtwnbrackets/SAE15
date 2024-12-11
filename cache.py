@@ -44,3 +44,24 @@ def download_pokemons(debut: int, fin:int):
             response = requests.get(f"https://pokeapi.co/api/v2/pokemon/{i}/")
             with open(cache_file, "w") as f:
                 json.dump(response.json(), f)
+
+
+
+def download_cache():
+    """Télécharge les données de tous les Pokémon et les sauvegarde en fichiers JSON."""
+    """Ne pas mettre 0 pour la valeur du début car il n'y aucun pokemon avec cette id"""
+    if os.path.isfile("cache") == False:
+        os.mkdir("cache")
+    for i in range(0,1302):
+        cache_file = f"cache/{i}.json"
+
+        # Si le fichier n'existe pas déjà, on le crée.
+        if os.path.isfile(cache_file) == False:
+
+            response = requests.get("https://pokeapi.co/api/v2/pokemon/?limit=1302")
+            json_data= response.json()
+            link = json_data["results"][i]["url"]
+            with open(cache_file, "w") as f:
+                pokemon = requests.get(link)
+                pokemon = pokemon.json()
+                json.dump(pokemon, f)
